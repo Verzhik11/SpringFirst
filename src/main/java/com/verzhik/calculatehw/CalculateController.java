@@ -14,23 +14,49 @@ public class CalculateController {
     }
     @GetMapping
     public String calculate() {
-        return calculateService.calculate();
+        return "<b>Добро пожаловать в калькулятор</b>";
     }
     @GetMapping(path = "/plus")
-    public String plus (@RequestParam int num1, @RequestParam int num2) {
-        return calculateService.plus(num1, num2);
+    public String plus (@RequestParam(required = false) Integer num1, @RequestParam(required = false) Integer num2) {
+        return buildView(num1, num2, "+");
     }
     @GetMapping(path = "/minus")
-    public String minus (@RequestParam int num1, @RequestParam int num2) {
-        return calculateService.minus(num1, num2);
+    public String minus (@RequestParam(required = false) Integer num1, @RequestParam(required = false) Integer num2) {
+        return buildView(num1, num2, "-");
     }
     @GetMapping(path = "/multiply")
-    public String multiply (@RequestParam int num1, @RequestParam int num2) {
-        return calculateService.multiply(num1, num2);
+    public String multiply (@RequestParam(required = false) Integer num1, @RequestParam(required = false) Integer num2) {
+        return buildView(num1, num2, "*");
     }
     @GetMapping(path = "/divide")
-    public String divide (@RequestParam int num1, @RequestParam int num2) {
-        return calculateService.divide(num1, num2);
+    public String divide (@RequestParam(required = false) Integer num1, @RequestParam(required = false) Integer num2) {
+        return buildView(num1, num2, "/");
+    }
+    private String buildView(Integer num1, Integer num2, String operation) {
+        if(num1 == null || num2 == null) {
+            return "Должны быть переданы все параметры";
+        }
+        if("/".equals(operation) & num2 == 0) {
+            return "На ноль делить нельзя";
+        }
+            Number result;
+            switch (operation) {
+                case "+":
+                    result = calculateService.plus(num1, num2);
+                    break;
+                case "-":
+                    result = calculateService.minus(num1, num2);
+                    break;
+                case "*":
+                    result = calculateService.multiply(num1, num2);
+                    break;
+                default:
+                    result = calculateService.divide(num1, num2);
+            }
+            return num1 + " " + operation + " " + num2 + " = " + result;
+
+
+        }
+
     }
 
-}
